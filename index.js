@@ -11,6 +11,22 @@ server.get('/', (req,res) => {
     res.json({ message: 'Welcome to Lambda' });
 })
 
+// Add a user
+server.post('/api/users', (req, res) => {
+    const user = req.body;
+
+    if (!user.name || !user.bio) {
+        res.status(400).json({ errorMessage: "Please provide name and bio for the user." });
+    } else (
+        Lambda.insert(user).then(item => {
+            res.status(201).json(user);
+        }).catch(err => {
+            console.log(err);
+            res.status(500).json({ errorMessage: "There was an error while saving the user to the database" })
+        })
+    )
+})
+
 // View users
 server.get('/api/users', (req, res) => {
     Lambda.find().then(item => {
@@ -34,6 +50,23 @@ server.get('/api/users/:id', (req, res) => {
     }).catch(err => {
         console.log(err);
         res.status(500).json({ errorMessage: "The user information could not be retrieved." });
+    })
+})
+
+// Delete a user
+server.delete('/api/users/:id', (req, res) => {
+    const { id } = req.params;
+    Lambda.findById(id).then(item => {
+        if (item) {
+            Lambda.remove(id).then(removed => {
+                res.status(200).json(item);
+            }).catch(err => {
+                console.log(err);
+                res.status(500).json({ errorMessage: "The user could not be removed" });
+            })
+        } else {
+            res.status(404).json({ message: "The user with the specified ID does not exist." });
+        }
     })
 })
 
