@@ -6,6 +6,7 @@ const Lambda = require('./data/db.js');
 const server = express();
 
 server.use(express.json());
+server.use(cors());
 
 server.get('/', (req,res) => {
     res.json({ message: 'Welcome to Lambda' });
