@@ -70,5 +70,29 @@ server.delete('/api/users/:id', (req, res) => {
     })
 })
 
+// Update a user
+server.put('/api/users/:id', (req, res) => {
+    const { id } = req.params;
+    const userUpdate = req.body;
+
+    Lambda.findById(id).then(item => {
+        if (!item) {
+            res.status(404).json({ message: "The user with the specified ID does not exist." });
+        } else {
+            if (!userUpdate.name || !userUpdate.bio) {
+                res.status(400).json({ errorMessage: "Please provide name and bio for the user." });
+            } else {
+                Lambda.update(id, userUpdate).then(item => {
+                    res.status(201).json(userUpdate);
+                }).catch(err => {
+                    res.status(500).json({ errorMessage: "The user information could not be modified." });
+                })
+            }
+        }
+    }).catch(err => {
+        console.log(err)
+    })
+})
+
 const port = 5000;
 server.listen(port, () => console.log(`Server listening on port ${port}!`));
