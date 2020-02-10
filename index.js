@@ -21,5 +21,21 @@ server.get('/api/users', (req, res) => {
     })
 })
 
+// View one user by id
+server.get('/api/users/:id', (req, res) => {
+    const { id } = req.params;
+    Lambda.findById(id).then(item => {
+        // res.json({ item: id,  })
+        if (item) {
+            res.status(200).json(item); 
+        } else {
+            res.status(404).json({ message: "The user with the specified ID does not exist." });
+        }
+    }).catch(err => {
+        console.log(err);
+        res.status(500).json({ errorMessage: "The user information could not be retrieved." });
+    })
+})
+
 const port = 5000;
 server.listen(port, () => console.log(`Server listening on port ${port}!`));
