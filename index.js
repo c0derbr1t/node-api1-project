@@ -1,5 +1,6 @@
 // implement your API here
 const express = require('express');
+const cors = require('cors');
 
 const Lambda = require('./data/db.js');
 
@@ -7,10 +8,6 @@ const server = express();
 
 server.use(express.json());
 server.use(cors());
-
-server.get('/', (req,res) => {
-    res.json({ message: 'Welcome to Lambda' });
-})
 
 // Add a user
 server.post('/api/users', (req, res) => {
